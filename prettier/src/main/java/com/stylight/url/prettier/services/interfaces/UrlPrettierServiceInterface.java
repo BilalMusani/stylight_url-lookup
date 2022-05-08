@@ -5,4 +5,5 @@ import com.stylight.url.prettier.models.ResponseDTO;
 
 public interface UrlPrettierServiceInterface {
     public ResponseDTO reverseLookup(RequestDTO requestDTO);
+    public ResponseDTO lookup(RequestDTO requestDTO);
 }

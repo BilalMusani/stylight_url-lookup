@@ -1,8 +1,11 @@
 package com.stylight.url.prettier.services;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.stylight.url.prettier.services.interfaces.UrlPrettierServiceInterface;
 
@@ -19,6 +22,50 @@ public class UrlPrettierService implements UrlPrettierServiceInterface{
 
     @Autowired
     private UrlMappingsDatasource urlMappingsDatasource;
+
+    public ResponseDTO lookup(RequestDTO requestDTO) {
+        List<String> matches = new ArrayList<String>();
+        requestDTO.urls.forEach(uri -> {
+            List<String> pathSegments = UriComponentsBuilder.fromUriString(uri).build().getPathSegments();
+            String matchedUrl = null;
+            List<String> accumulatedSegments = new ArrayList<String>();
+             
+            for(String segment: pathSegments) {
+                accumulatedSegments.add(segment);
+                String match = this.urlMappingsDatasource.getRouteToPrettyUri().get(("/" + String.join("/", accumulatedSegments)));
+                matchedUrl = match != null ? match : matchedUrl != null ? matchedUrl + "/" + segment : segment;
+            }
+
+            String querySegments = String.join(
+                "&", UriComponentsBuilder.fromUriString(uri).build().getQueryParams()
+                .entrySet()
+                .stream()
+                .map(e -> String.join("&", e.getValue().stream().map(x -> e.getKey() + "=" + x).collect(Collectors.toList())))
+                .collect(Collectors.toList()));
+                        
+            if (!querySegments.isEmpty()) {
+                matchedUrl = matchedUrl + "?" + querySegments;
+
+                List<String> routeLinkedQuerySegments = this.urlMappingsDatasource.getRouteToQueryParams().get("/" + String.join("/", pathSegments));
+
+                if (routeLinkedQuerySegments != null) {
+                    Optional<String> longestRouteLinkedQuerySegment = routeLinkedQuerySegments.stream().filter(x -> querySegments.indexOf(x) == 0).max(Comparator.comparingInt(String::length));
+                    
+                    if (longestRouteLinkedQuerySegment.isPresent()) {
+                        String unmatched = querySegments.substring(longestRouteLinkedQuerySegment.get().length(), querySegments.length());
+                        matchedUrl = this.urlMappingsDatasource.getQueryParamsToPrettyUri().get(longestRouteLinkedQuerySegment.get());
+                        if (unmatched.length() > 0) {
+                            // Remove any starting ampersands
+                            matchedUrl = matchedUrl + "?" + unmatched.replaceFirst("&", "");
+                        }
+                    }
+                }
+            }
+            matches.add(matchedUrl == null ? uri : matchedUrl);
+        });
+
+        return new ResponseDTO(matches);
+    }
 
     public ResponseDTO reverseLookup(RequestDTO requestDTO) {
         List<String> reverseMatches = new ArrayList<String>();
@@ -45,7 +92,7 @@ public class UrlPrettierService implements UrlPrettierServiceInterface{
                     reverseUrl = reversedSegment;
                 }
             }
-            reverseMatches.add(reverseUrl);
+            reverseMatches.add(reverseUrl == null ? uri : reverseUrl);
         });
         return new ResponseDTO(reverseMatches);
     }

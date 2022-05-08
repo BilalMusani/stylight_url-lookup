@@ -47,4 +47,22 @@ class PrettierApplicationTests {
 		RequestDTO requestDTO = new RequestDTO(new ArrayList<String>(Arrays.asList("/lookup?brand=123")));
 		assertThat(urlPrettierService.lookup(requestDTO).urls).isEqualTo(Arrays.asList("/lookup?brand=123"));
 	}
+
+	@Test
+	void reverseLookupRoutePathSegmentsOnly() {
+		RequestDTO requestDTO = new RequestDTO(new ArrayList<String>(Arrays.asList("/Fashion/")));
+		assertThat(urlPrettierService.reverseLookup(requestDTO).urls).isEqualTo(Arrays.asList("/products"));
+	}
+
+	@Test
+	void reverseLookupRouteWithQueryParams() {
+		RequestDTO requestDTO = new RequestDTO(new ArrayList<String>(Arrays.asList("/Boat--Shoes/")));
+		assertThat(urlPrettierService.reverseLookup(requestDTO).urls).isEqualTo(Arrays.asList("/products?tag=5678"));
+	}
+
+	@Test
+	void reverseLookupRoutePartialMatch() {
+		RequestDTO requestDTO = new RequestDTO(new ArrayList<String>(Arrays.asList("/Boat--Shoes/Products")));
+		assertThat(urlPrettierService.reverseLookup(requestDTO).urls).isEqualTo(Arrays.asList("/products?tag=5678/Products"));
+	}
 }

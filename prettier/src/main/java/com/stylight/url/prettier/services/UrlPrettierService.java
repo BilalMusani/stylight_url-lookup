@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.stylight.url.prettier.services.interfaces.UrlPrettierServiceInterface;
 
@@ -70,8 +69,6 @@ public class UrlPrettierService implements UrlPrettierServiceInterface{
     public ResponseDTO reverseLookup(RequestDTO requestDTO) {
         List<String> reverseMatches = new ArrayList<String>();
         requestDTO.urls.forEach(uri -> {
-            // Pretty url can only contain path segments else raise error
-            // TODO: Create error here if the url contains query params or if path segments length == 0.
             List<String> pathSegments = UriComponentsBuilder.fromUriString(uri).build().getPathSegments();
             // First check if the path has a direct route mapping correspondence
             String reverseUrl = extractReversedUrl(pathSegments);

@@ -20,6 +20,7 @@ public class UrlMappingsDatasource {
     private HashBiMap<String, String> queryParamsToPrettyUri;
     private HashMap<String, String> queryParamsToRoute;
     private HashMap<String, List<String>> routeToQueryParams;
+    private boolean initialized = false;
 
     public UrlMappingsDatasource() {
         logger.info("Initialized database for mappings");
@@ -30,7 +31,11 @@ public class UrlMappingsDatasource {
     }
 
     @PostConstruct
-    private void populateMappings() {
+    public void populateMappings() {
+        // To prevent users from manually invoking this class and repopulating the maps
+        if(this.initialized)
+            return;
+        
         logger.info("Begin inserting default entries into BiMap");
 
         this.routeToQueryParams.put("/products", new ArrayList<String>(
@@ -49,6 +54,8 @@ public class UrlMappingsDatasource {
 
         this.routeToPrettyUri.put("/products", "/Fashion/");
         logger.info("End inserting default entries into BiMap");
+        
+        this.initialized = true;
     }
 
 
@@ -66,5 +73,9 @@ public class UrlMappingsDatasource {
 
     public HashMap<String, List<String>> getRouteToQueryParams() {
         return routeToQueryParams;
+    }
+
+    public void setInitialized(boolean initialized) {
+        this.initialized = initialized;
     }
 }

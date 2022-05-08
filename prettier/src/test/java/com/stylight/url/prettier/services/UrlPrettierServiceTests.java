@@ -1,18 +1,15 @@
-package com.stylight.url.prettier;
+package com.stylight.url.prettier.services;
 
 import java.util.ArrayList;
 
 import com.stylight.url.prettier.datasource.UrlMappingsDatasource;
 import com.stylight.url.prettier.models.RequestDTO;
-import com.stylight.url.prettier.services.UrlPrettierService;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
-@SpringBootTest
-class PrettierApplicationTests {
+
+class UrlPrettierServiceTests {
 
 	private UrlMappingsDatasource dataSource = new UrlMappingsDatasource();
 

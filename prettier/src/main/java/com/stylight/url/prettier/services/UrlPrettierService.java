@@ -32,7 +32,7 @@ public class UrlPrettierService implements UrlPrettierServiceInterface{
             for(String segment: pathSegments) {
                 accumulatedSegments.add(segment);
                 String match = this.urlMappingsDatasource.getRouteToPrettyUri().get(("/" + String.join("/", accumulatedSegments)));
-                matchedUrl = match != null ? match : matchedUrl != null ? matchedUrl + "/" + segment : segment;
+                matchedUrl = match != null ? match : matchedUrl != null ? matchedUrl + "/" + segment : "/" + segment;
             }
 
             String querySegments = String.join(

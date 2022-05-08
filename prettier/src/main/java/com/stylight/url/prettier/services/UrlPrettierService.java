@@ -119,7 +119,6 @@ public class UrlPrettierService implements UrlPrettierServiceInterface{
                 reverseUrl = urlMappingsDatasource.getQueryParamsToRoute().get(queryParams);
                 reverseUrl = reverseUrl != null ? reverseUrl + "?" + queryParams: reverseUrl;
             }
-            // Add the delimeter for query params
         }
         return reverseUrl;
     }

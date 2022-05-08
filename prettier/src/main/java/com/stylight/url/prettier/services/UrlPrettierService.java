@@ -36,12 +36,7 @@ public class UrlPrettierService implements UrlPrettierServiceInterface{
                 matchedUrl = match != null ? match : matchedUrl != null ? matchedUrl + "/" + segment : "/" + segment;
             }
 
-            String querySegments = String.join(
-                "&", UriComponentsBuilder.fromUriString(uri).build().getQueryParams()
-                .entrySet()
-                .stream()
-                .map(e -> String.join("&", e.getValue().stream().map(x -> e.getKey() + "=" + x).collect(Collectors.toList())))
-                .collect(Collectors.toList()));
+            String querySegments = this.getQuerySegments(uri);
                         
             if (!querySegments.isEmpty()) {
                 matchedUrl = matchedUrl + "?" + querySegments;
@@ -65,6 +60,15 @@ public class UrlPrettierService implements UrlPrettierServiceInterface{
         });
 
         return new ResponseDTO(matches);
+    }
+
+    public String getQuerySegments(String uri) {
+        return String.join(
+                "&", UriComponentsBuilder.fromUriString(uri).build().getQueryParams()
+                .entrySet()
+                .stream()
+                .map(e -> String.join("&", e.getValue().stream().map(x -> e.getKey() + "=" + x).collect(Collectors.toList())))
+                .collect(Collectors.toList()));
     }
 
     public ResponseDTO reverseLookup(RequestDTO requestDTO) {
@@ -92,6 +96,12 @@ public class UrlPrettierService implements UrlPrettierServiceInterface{
                     reverseUrl = reversedSegment;
                 }
             }
+
+            if(reverseUrl != null) {
+                String querySegments = this.getQuerySegments(uri);
+                reverseUrl = querySegments.length() > 0 ? reverseUrl + "/?" + querySegments : reverseUrl;
+            }
+
             reverseMatches.add(reverseUrl == null ? uri : reverseUrl);
         });
         return new ResponseDTO(reverseMatches);

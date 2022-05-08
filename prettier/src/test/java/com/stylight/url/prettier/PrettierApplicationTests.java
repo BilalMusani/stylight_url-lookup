@@ -1,13 +1,50 @@
 package com.stylight.url.prettier;
 
+import java.util.ArrayList;
+
+import com.stylight.url.prettier.datasource.UrlMappingsDatasource;
+import com.stylight.url.prettier.models.RequestDTO;
+import com.stylight.url.prettier.services.UrlPrettierService;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
+import java.util.Arrays;
+import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class PrettierApplicationTests {
 
+	private UrlMappingsDatasource dataSource = new UrlMappingsDatasource();
+
+	private UrlPrettierService urlPrettierService;
+  
+	@BeforeEach
+	void initUseCase() {
+		this.dataSource.populateMappings();
+		this.urlPrettierService = new UrlPrettierService(dataSource);
+	}
+  
 	@Test
-	void contextLoads() {
+	void lookupPrettyRouteBySinglePathSegment() {
+		RequestDTO requestDTO = new RequestDTO(new ArrayList<String>(Arrays.asList("/products")));
+		assertThat(urlPrettierService.lookup(requestDTO).urls).isEqualTo(Arrays.asList("/Fashion/"));
 	}
 
+	@Test
+	void lookupPrettyRouteByPathAndQueryParams() {
+		RequestDTO requestDTO = new RequestDTO(new ArrayList<String>(Arrays.asList("/products?gender=female")));
+		assertThat(urlPrettierService.lookup(requestDTO).urls).isEqualTo(Arrays.asList("/Women/"));
+	}
+
+	@Test
+	void lookupPrettyRouteByPartialMatch() {
+		RequestDTO requestDTO = new RequestDTO(new ArrayList<String>(Arrays.asList("/products?gender=female&tag=123&tag=1234&tag=5678&brand=123")));
+		assertThat(urlPrettierService.lookup(requestDTO).urls).isEqualTo(Arrays.asList("/Women/Shoes/?tag=5678&brand=123"));
+	}
+
+	@Test
+	void lookupPrettyRouteWithNoMatch() {
+		RequestDTO requestDTO = new RequestDTO(new ArrayList<String>(Arrays.asList("/lookup?brand=123")));
+		assertThat(urlPrettierService.lookup(requestDTO).urls).isEqualTo(Arrays.asList("/lookup?brand=123"));
+	}
 }

@@ -26,6 +26,10 @@ public class UrlPrettierService implements UrlPrettierServiceInterface{
     public ResponseDTO lookup(RequestDTO requestDTO) {
         List<String> matches = new ArrayList<String>();
         requestDTO.urls.forEach(uri -> {
+            if(uri == null) {
+                matches.add(uri);
+                return;
+            }
             List<String> pathSegments = UriComponentsBuilder.fromUriString(uri).build().getPathSegments();
             String matchedUrl = null;
             List<String> accumulatedSegments = new ArrayList<String>();
@@ -74,6 +78,10 @@ public class UrlPrettierService implements UrlPrettierServiceInterface{
     public ResponseDTO reverseLookup(RequestDTO requestDTO) {
         List<String> reverseMatches = new ArrayList<String>();
         requestDTO.urls.forEach(uri -> {
+            if(uri == null) {
+                reverseMatches.add(uri);
+                return;
+            }
             List<String> pathSegments = UriComponentsBuilder.fromUriString(uri).build().getPathSegments();
             // First check if the path has a direct route mapping correspondence
             String reverseUrl = extractReversedUrl(pathSegments);

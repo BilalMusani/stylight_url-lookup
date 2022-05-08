@@ -15,8 +15,8 @@ public class UrlPrettierController {
     private UrlPrettierService urlPrettierService;
 
 	@PostMapping("/lookup")
-	public void lookup(@RequestBody RequestDTO request) {
-		throw new UnsupportedOperationException();
+	public ResponseDTO lookup(@RequestBody RequestDTO request) {
+		return this.urlPrettierService.lookup(request);
 	}
 
     @PostMapping("/reverseLookup")

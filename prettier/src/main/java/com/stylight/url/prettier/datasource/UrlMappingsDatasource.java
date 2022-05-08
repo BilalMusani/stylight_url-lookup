@@ -1,5 +1,7 @@
 package com.stylight.url.prettier.datasource;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,27 +19,34 @@ public class UrlMappingsDatasource {
     private HashBiMap<String, String> routeToPrettyUri;
     private HashBiMap<String, String> queryParamsToPrettyUri;
     private HashMap<String, String> queryParamsToRoute;
+    private HashMap<String, List<String>> routeToQueryParams;
 
     public UrlMappingsDatasource() {
         logger.info("Initialized database for mappings");
         this.routeToPrettyUri = HashBiMap.create();
         this.queryParamsToPrettyUri = HashBiMap.create();
         this.queryParamsToRoute = new HashMap<String, String>();
+        this.routeToQueryParams = new HashMap<String, List<String>>();
     }
 
     @PostConstruct
     private void populateMappings() {
         logger.info("Begin inserting default entries into BiMap");
-        this.queryParamsToPrettyUri.put("gender=female&tag=123&tag=1234", "/Women/Shoes/");
-        this.queryParamsToRoute.put("gender=female&tag=123&tag=1234", "/products");
 
+        this.routeToQueryParams.put("/products", new ArrayList<String>(
+            Arrays.asList("gender=female", "gender=female&tag=123&tag=1234", "brand=123", "tag=5678")));
+
+        this.queryParamsToRoute.put("gender=female&tag=123&tag=1234", "/products");
+        this.queryParamsToRoute.put("gender=female", "/products");
+        this.queryParamsToRoute.put("brand=123", "/products");
+        this.queryParamsToRoute.put("tag=5678", "/products");
+        this.queryParamsToRoute.put("brand=123", "/products");
+
+        this.queryParamsToPrettyUri.put("gender=female", "/Women/");
         this.queryParamsToPrettyUri.put("brand=123", "/Adidas/");
-        this.queryParamsToRoute.put("brand=123", "/products");        
-        // this.insertMapping("/products", "/Fashion");
-        // this.insertMapping("/products?gender=female", "/Women/");
-        // this.insertMapping("/products?gender=female&tag=123&tag=1234", "/Women/Shoes/");
-        // this.insertMapping("/products?tag=5678", "/Boat--Shoes/");
-        // this.insertMapping("/products?brand=123", "/Adidas/");
+        this.queryParamsToPrettyUri.put("tag=5678", "/Boat--Shoes/");        
+        this.queryParamsToPrettyUri.put("gender=female&tag=123&tag=1234", "/Women/Shoes/");
+
         this.routeToPrettyUri.put("/products", "/Fashion/");
         logger.info("End inserting default entries into BiMap");
     }
@@ -53,5 +62,9 @@ public class UrlMappingsDatasource {
 
     public HashMap<String, String> getQueryParamsToRoute() {
         return queryParamsToRoute;
+    }
+
+    public HashMap<String, List<String>> getRouteToQueryParams() {
+        return routeToQueryParams;
     }
 }

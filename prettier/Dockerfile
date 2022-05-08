@@ -1,7 +1,11 @@
-FROM openjdk:11
+FROM openjdk:11 AS build
 ADD . /usr/src/prettier
 WORKDIR /usr/src/prettier
 RUN ./gradlew bootJar
+
+FROM openjdk:11 AS package
+WORKDIR /usr/src/prettier
 RUN ls
-COPY build/libs/*.jar ./app.jar
-ENTRYPOINT ["java","-jar","build/libs/prettier-0.0.1-SNAPSHOT.jar"]
+COPY --from=build /usr/src/prettier/build/libs/*.jar ./app.jar
+RUN ls
+ENTRYPOINT ["java","-jar","app.jar"]

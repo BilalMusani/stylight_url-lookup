@@ -1,0 +1,15 @@
+version: '2'
+services:
+    prettier:
+        container_name: prettier
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: prettier:latest
+        ports:
+            - 8081:8081
+        networks:
+            - prettier-network
+networks:
+    prettier-network:
+        driver: bridge

@@ -99,7 +99,9 @@ public class UrlPrettierService implements UrlPrettierServiceInterface{
 
             if(reverseUrl != null) {
                 String querySegments = this.getQuerySegments(uri);
-                reverseUrl = querySegments.length() > 0 ? reverseUrl + "/?" + querySegments : reverseUrl;
+                // If the reverseUrl already has query segments, append the query segments from the uri to the reverseUrl
+                String reverseUrlQuerySegments = this.getQuerySegments(reverseUrl);
+                reverseUrl = querySegments.length() > 0 ? reverseUrl + (reverseUrlQuerySegments.length() > 0 ? "&": "?") + querySegments : reverseUrl;
             }
 
             reverseMatches.add(reverseUrl == null ? uri : reverseUrl);

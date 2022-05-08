@@ -8,19 +8,20 @@ import java.util.stream.Collectors;
 
 import com.stylight.url.prettier.services.interfaces.UrlPrettierServiceInterface;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import lombok.RequiredArgsConstructor;
 
 import com.stylight.url.prettier.datasource.UrlMappingsDatasource;
 import com.stylight.url.prettier.models.RequestDTO;
 import com.stylight.url.prettier.models.ResponseDTO;
 
 @Service
+@RequiredArgsConstructor
 public class UrlPrettierService implements UrlPrettierServiceInterface{
 
-    @Autowired
-    private UrlMappingsDatasource urlMappingsDatasource;
+    private final UrlMappingsDatasource urlMappingsDatasource;
 
     public ResponseDTO lookup(RequestDTO requestDTO) {
         List<String> matches = new ArrayList<String>();

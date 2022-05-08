@@ -277,3 +277,14 @@ $ curl -d "@data.json" -X POST http://localhost:8081/reverseLookup
 }
 ```
 - - -
+## Running the app
+
+### Docker
+```bash
+# Build the image
+$ docker-compose build
+# Run the application
+$ docker-compose up -d
+```
+
+\* The application is hosted at ```http://127.0.0.1:8081```

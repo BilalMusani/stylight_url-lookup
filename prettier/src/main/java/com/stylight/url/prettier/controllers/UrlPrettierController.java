@@ -1,21 +1,26 @@
 package com.stylight.url.prettier.controllers;
 
-import java.util.List;
+import com.stylight.url.prettier.models.RequestDTO;
+import com.stylight.url.prettier.models.ResponseDTO;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import com.stylight.url.prettier.services.UrlPrettierService;
 @RestController
 public class UrlPrettierController {
     
-	@GetMapping("/lookup")
-	public void lookup(@RequestParam List<String> values) {
+    @Autowired
+    private UrlPrettierService urlPrettierService;
+
+	@PostMapping("/lookup")
+	public void lookup(@RequestBody RequestDTO request) {
 		throw new UnsupportedOperationException();
 	}
 
-    @GetMapping("/reverseLookup")
-    public void reverseLookup(@RequestParam List<String> values) {
-		throw new UnsupportedOperationException();
+    @PostMapping("/reverseLookup")
+    public ResponseDTO reverseLookup(@RequestBody RequestDTO request) {
+		return this.urlPrettierService.reverseLookup(request);
 	}
 }

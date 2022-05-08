@@ -82,8 +82,10 @@ public class UrlPrettierService implements UrlPrettierServiceInterface{
                     if (reversedSegment == null) {
                         segmentsAccumulator.remove(segment);
                         // Keep unmatched part as is.
-                        reverseUrl = reverseUrl + "/" + String.join("/", 
-                            pathSegments.stream().filter(x -> !segmentsAccumulator.contains(x)).collect(Collectors.toList()));
+                        if (segmentsAccumulator.size() > 0) {
+                            reverseUrl = reverseUrl + "/" + String.join("/", 
+                                pathSegments.stream().filter(x -> !segmentsAccumulator.contains(x)).collect(Collectors.toList()));
+                        }
                         break;
                     }
                     reverseUrl = reversedSegment;

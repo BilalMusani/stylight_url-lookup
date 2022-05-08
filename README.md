@@ -281,6 +281,7 @@ $ curl -d "@data.json" -X POST http://localhost:8081/reverseLookup
 
 ### Docker
 ```bash
+$ cd prettier
 # Build the image
 $ docker-compose build
 # Run the application
